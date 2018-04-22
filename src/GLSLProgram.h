@@ -1,6 +1,7 @@
-#pragma once
+//#pragma once
 #include <string>
 #include <GL/glew.h>
+//#include "Debug.h"
 class GLSLProgram
 {
 public:
@@ -10,9 +11,20 @@ public:
     void compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
     void linkShaders();
+    
+    void addAttribute(const std::string& attributeName);
+    
+    GLuint getUniformLocation( const std::string& uniformName);
+    
+    void use();
+    void unUse();
 
 private:
     GLuint _programID;
+    
+    int _numAttributes;
+    
+    void compileShader(const std:: string& filePath, GLuint& id);
 
     GLuint _vertexShaderID;
     GLuint _fragmentShaderID;
