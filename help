@@ -2,3 +2,9 @@ setup on ubuntu
 sudo apt-get install libsdl2* libglew-dev 
 
 chmod 755 build.sh
+
+setup on Solus
+sudo eopkg it -c system.devel
+glew-devel
+sdl2
+sdl2-devel
