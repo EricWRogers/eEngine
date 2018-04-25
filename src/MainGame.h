@@ -5,6 +5,7 @@
 
 #include "Sprite.h"
 #include "GLSLProgram.h"
+#include "GLTexture.h"
 
 enum class GameState {PLAY, EXIT};
 
@@ -30,7 +31,9 @@ private:
     GameState _gameState;
 
     Sprite _sprite;
-    
+    GLTexture _playerTexture;
+
+
     GLSLProgram _colorProgram;
     
     float _time;
