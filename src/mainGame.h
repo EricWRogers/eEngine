@@ -1,6 +1,7 @@
 //#pragma once
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
+#include <stdio.h>
 #include <iostream>
 #include <vector>
 
@@ -8,15 +9,14 @@
 #include "GLSLProgram.h"
 #include "GLTexture.h"
 #include "Window.h"
+#include "Debug.h"
+#include "lua.hpp"
   
 enum class GameState {PLAY, EXIT};
 
-class MainGame
+class mainGame
 {
 public:
-    MainGame();
-    ~MainGame();
-
     void run();
     
 
@@ -29,15 +29,18 @@ private:
     void calculateFPS();
     
     Window _window;
-    int _screenWidth, _screenHeight;
+    int _screenWidth = 1024;
+    int _screenHeight = 768;
     GameState _gameState;
 
     std::vector <Sprite*> _sprite;
 
     GLSLProgram _colorProgram;
-    
+
     float _fps;
-    float _maxFPS;
+    float _maxFPS = 120.0f;;
     float _frameTime;
-    float _time;
+    float _time = 0;
+    
+
 };

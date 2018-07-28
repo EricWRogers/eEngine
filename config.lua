@@ -3,12 +3,12 @@ scriptDirectory = assetDirectory .. "scripts/"
 
 --SetAssetBasePath(assetDirectory)
 
-dofile(scriptDirectory .. "core/scanCodes.lua")
-dofile(scriptDirectory .. "core/input.lua")
-dofile(scriptDirectory .. "core/gameMath.lua")
-dofile(scriptDirectory .. "core/utility.lua")
-dofile(scriptDirectory .. "core/entity.lua")
-dofile(scriptDirectory .. "core/objectPool.lua")
+--dofile(scriptDirectory .. "core/scanCodes.lua")
+--dofile(scriptDirectory .. "core/input.lua")
+--dofile(scriptDirectory .. "core/gameMath.lua")
+--dofile(scriptDirectory .. "core/utility.lua")
+--dofile(scriptDirectory .. "core/entity.lua")
+--dofile(scriptDirectory .. "core/objectPool.lua")
 
 math.randomseed( os.time() )
 
@@ -53,5 +53,6 @@ math.randomseed( os.time() )
 --dofile(scriptDirectory .. "exampleProjects/platformer_1.lua")
 --dofile(scriptDirectory .. "exampleProjects/platformer_2.lua")
 --dofile(scriptDirectory .. "exampleProjects/platformer_3.lua")
-dofile(scriptDirectory .. "exampleProjects/platformer_4.lua")
+--dofile(scriptDirectory .. "exampleProjects/platformer_4.lua")
 --dofile(scriptDirectory .. "exampleProjects/spaceGame/spaceGame.lua")
+dofile(scriptDirectory .. "exampleProjects/test.lua")
