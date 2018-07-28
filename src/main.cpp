@@ -10,6 +10,8 @@
 #include "GLTexture.h"
 #include "Window.h"
 #include "Debug.h"
+#include "Camera2D.h"
+
 #include "lua.hpp"
 
 void initSystem();
@@ -21,9 +23,13 @@ void calculateFPS();
 
 enum class GameState {PLAY, EXIT};
 
-Window window;
 int screenWidth = 1024;
 int screenHeight = 768;
+
+Window window;
+
+Camera2D camera;
+
 GameState gameState;
 
 std::vector <Sprite*> sprite;
@@ -63,6 +69,8 @@ void initShaders() {
 
 void processInput()
 {
+    const float CAMERA_SPEED = 10.0f;
+    const float SCALE_SPEED = 0.1f;
     SDL_Event event;
     while(SDL_PollEvent(&event))
     {
@@ -77,8 +85,26 @@ void processInput()
                 switch (event.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
-                    gameState = GameState::EXIT;
-                    break;
+                        gameState = GameState::EXIT;
+                        break;
+                    case SDLK_w:
+                        camera.setPosition(camera.getPosition() + glm::vec2(0.0f, 10.0f));
+                        break;
+                    case SDLK_s:
+                        camera.setPosition(camera.getPosition() + glm::vec2(0.0f, -10.0f));
+                        break;
+                    case SDLK_a:
+                        camera.setPosition(camera.getPosition() + glm::vec2(-10.0f, 0.0f));
+                        break;
+                    case SDLK_d:
+                        camera.setPosition(camera.getPosition() + glm::vec2(10.0f, 0.0f));
+                        break;
+                    case SDLK_q:
+                        camera.setScale(camera.getScale() + SCALE_SPEED);
+                        break;
+                    case SDLK_e:
+                        camera.setScale(camera.getScale() - SCALE_SPEED);
+                        break;
                 }
                 break;
         }
@@ -98,6 +124,10 @@ void drawGame()
     
     GLuint timeLocation = colorProgram.getUniformLocation("time");
     glUniform1f( timeLocation, gameTime);
+    // Set the camera matrix
+    GLuint pLocation = colorProgram.getUniformLocation("P");
+    glm::mat4 cameraMatrix = camera.getCameraMatrix(); 
+    glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
     
     for (int i = 0; i < sprite.size(); i++)
     {
@@ -194,17 +224,17 @@ void call(lua_State* state, const char* functionName)
 
 int twoSprite(lua_State* luaState) {
     sprite.push_back(new Sprite());
-    sprite.back()->init( -1.0f, -1.0f, 1.0f, 1.0f, "src/Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
+    sprite.back()->init( 0.0f, 0.0f, screenWidth / 2, screenHeight / 2, "src/Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
     
     sprite.push_back(new Sprite());
-    sprite.back()->init( 0.0f, -1.0f, 1.0f, 1.0f, "src/Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
+    sprite.back()->init(  screenWidth / 2, 0.0f, screenWidth / 2, screenHeight / 2, "src/Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
     return 2;
 }
 
 int CreateWindow(lua_State* state) {
 
-    int screenWidth = (int)lua_tointeger(state, 1);
-    int screenHeight = (int)lua_tointeger(state, 2);
+    screenWidth = (int)lua_tointeger(state, 1);
+    screenHeight = (int)lua_tointeger(state, 2);
     const char* title = lua_tostring(state, 3);
 	bool fullscreen = false;
 	if (lua_gettop(state) >= 4)
@@ -217,6 +247,8 @@ int CreateWindow(lua_State* state) {
 
     //Add fullScreen
     window.create( title, screenWidth, screenHeight, 0);
+    // init camera
+    camera.init(screenWidth, screenHeight);
 
     gameState = GameState::PLAY;
 
@@ -241,6 +273,7 @@ int main(int argc, char** argv) {
 
         processInput();
         gameTime += 0.01f;
+        camera.update();
         drawGame();
         calculateFPS();
 
