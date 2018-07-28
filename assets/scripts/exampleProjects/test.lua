@@ -20,6 +20,9 @@ end
 
 -- called at a fixed interval (16 ms) to update the state of the game world.
 function Update()
+     if IsKeyReleased(SDL_SCANCODE_DOWN) then
+         Log("helloLog")
+     end
 end
 
 -- called for each new frame drawn to the screen.

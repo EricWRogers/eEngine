@@ -3,7 +3,7 @@ scriptDirectory = assetDirectory .. "scripts/"
 
 --SetAssetBasePath(assetDirectory)
 
---dofile(scriptDirectory .. "core/scanCodes.lua")
+dofile(scriptDirectory .. "core/scanCodes.lua")
 --dofile(scriptDirectory .. "core/input.lua")
 --dofile(scriptDirectory .. "core/gameMath.lua")
 --dofile(scriptDirectory .. "core/utility.lua")

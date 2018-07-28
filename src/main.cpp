@@ -26,6 +26,10 @@ enum class GameState {PLAY, EXIT};
 int screenWidth = 1024;
 int screenHeight = 768;
 
+const int NUM_SDL_SCANCODES = 512;
+bool keys[NUM_SDL_SCANCODES];
+bool prevKeys[NUM_SDL_SCANCODES];
+
 Window window;
 
 Camera2D camera;
@@ -79,9 +83,16 @@ void processInput()
                 gameState = GameState::EXIT;
                 break;
             case SDL_MOUSEMOTION:
-                std::cout << event.motion.x << " " << event.motion.y << std::endl;
+                // This event is only called when mouse is moved
+                //std::cout << event.motion.x << " " << event.motion.y << std::endl;
                 break;
+            case SDL_KEYUP:
+                keys[event.key.keysym.scancode] = false;
+                //prevKeys[event.key.keysym.scancode] = true;
+            break;
             case SDL_KEYDOWN:
+                keys[event.key.keysym.scancode] = true;
+                //prevKeys[event.key.keysym.scancode] = false;
                 switch (event.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
@@ -180,6 +191,10 @@ void calculateFPS()
     }
 }
 
+////////////////////
+//// lua_State* ////
+////////////////////
+
 void printError(lua_State* state)
 {
     Error(lua_tostring(state, -1));
@@ -222,6 +237,11 @@ void call(lua_State* state, const char* functionName)
     }
 }
 
+///////////////////////
+//// LUA FUNCTIONS ////
+///////////////////////
+
+// Delete This 
 int twoSprite(lua_State* luaState) {
     sprite.push_back(new Sprite());
     sprite.back()->init( 0.0f, 0.0f, screenWidth / 2, screenHeight / 2, "src/Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
@@ -256,17 +276,49 @@ int CreateWindow(lua_State* state) {
     return 0;
 }
 
+int IsKeyDown(lua_State* state) {
+    int scancode = (int)lua_tointeger(state, 1);
+	lua_pushboolean(state, keys[scancode]);
+    return 1;
+}
+
+int IsKeyReleased(lua_State* state) {
+	int scancode = (int)lua_tointeger(state, 1);
+	lua_pushboolean(state, !keys[scancode] && prevKeys[scancode]);
+	return 1;
+}
+
+int IsKeyPressed(lua_State* state) {
+	int scancode = (int)lua_tointeger(state, 1);
+	lua_pushboolean(state, keys[scancode] && !prevKeys[scancode]);
+	return 1;
+}
+
+int LuaLog(lua_State* state) {
+    const char* text = lua_tostring(state, 1);
+    Log(text);
+    return 0;
+}
+
+void Start();
+void Update();
+void Draw();
+void endUpdate() { SDL_memcpy(&prevKeys, &keys, NUM_SDL_SCANCODES); }
+
 int main(int argc, char** argv) {
     luaState = luaL_newstate();
     luaL_openlibs(luaState);
-
+    
+    lua_register(luaState, "IsKeyDown", IsKeyDown);
+    lua_register(luaState, "IsKeyReleased", IsKeyReleased);
+    lua_register(luaState, "IsKeyPressed", IsKeyPressed);
     lua_register(luaState, "twoSprite", twoSprite);
     lua_register(luaState, "CreateWindow", CreateWindow);
+    lua_register(luaState, "Log", LuaLog);
 
     runScript(luaState, CONFIG_FILE);
     
     call(luaState, "Start");
-
 
     while (gameState == GameState::PLAY){
         float startTicks = SDL_GetTicks();
@@ -274,15 +326,20 @@ int main(int argc, char** argv) {
         processInput();
         gameTime += 0.01f;
         camera.update();
+        call(luaState, "Update");
         drawGame();
         calculateFPS();
+        endUpdate();
+{
+    SDL_memcpy(&prevKeys, &keys, NUM_SDL_SCANCODES);
+}
 
-        static int frameCounter = 0;
+        /* static int frameCounter = 0;
         frameCounter++;
         if (frameCounter == 10) { 
             std::cout << fps << std::endl;
             frameCounter = 0;
-        }
+        } */
 
         float frameTicks = SDL_GetTicks() - startTicks;
         if (1000.0f / maxFPS > frameTicks) {
