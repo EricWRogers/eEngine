@@ -14,7 +14,7 @@
 #include "SpriteBatch.h"
 #include "ResourceManager.h"
 
-#include "lua.hpp"
+#include "lua5.3/lua.hpp"
 
 void initSystem();
 void initShaders();

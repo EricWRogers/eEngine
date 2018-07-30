@@ -3,9 +3,19 @@ sudo apt-get install libsdl2* libglew-dev
 
 chmod 755 build.sh
 
+ubuntu 16.04
+	libglm-dev
+	glew-utils
+	libglew-dbg
+	libglew-dev
+	liblua5.3-0
+	liblua5.3-dbg
+	liblua5.3-dev
+
 setup on Solus
 to get c++ fully working
 	sudo eopkg it -c system.devel
+	#include "lua.hpp"
 glew-devel
 sdl2
 sdl2-devel

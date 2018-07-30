@@ -16,6 +16,7 @@ SCREEN_HEIGHT = 600
 function Start()
     CreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Minimal eEngine Project")
     twoSprite()
+    Log("DoneStarted")
 end
 
 -- called at a fixed interval (16 ms) to update the state of the game world.
