@@ -12,7 +12,7 @@
 #include "Debug.h"
 #include "Camera2D.h"
 
-#include "lua.hpp"
+#include "lua5.3/lua.hpp" 
 
 void initSystem();
 void initShaders();
