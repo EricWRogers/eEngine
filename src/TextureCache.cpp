@@ -24,9 +24,9 @@ GLTexture TextureCache::getTexture(std::string texturePath)
         GLTexture newTexture = ImageLoader::loadPNG(texturePath);
         // insert it into the map
         _textureMap.insert(make_pair(texturePath, newTexture));
-        std::cout << "Loaded Texture!\n";
+        // std::cout << "Loaded Texture!\n";
         return newTexture;
     }
-    std::cout << "Loaded Cached Texture!\n";
+    // std::cout << "Loaded Cached Texture!\n";
     return mit->second;
 }
