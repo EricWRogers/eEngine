@@ -8,6 +8,7 @@ SpriteBatch::~SpriteBatch() {}
 
 void SpriteBatch::init() { 
     createVertexArray();
+    Log("init");
 }
 
 void SpriteBatch::begin(GlyphSortType sortType /*GlyphSortType::TEXTURE*/) {
@@ -15,7 +16,7 @@ void SpriteBatch::begin(GlyphSortType sortType /*GlyphSortType::TEXTURE*/) {
     _renderBatch.clear();
 
     for (int i = 0; i < _glyphs.size(); i++)
-        delete _glyphs[i];
+       delete _glyphs[i];
 
     _glyphs.clear();
 }
@@ -39,13 +40,13 @@ void SpriteBatch::draw(const glm::vec4& destRect, const glm::vec4& uvRect, GLuin
     newGlyph->bottomLeft.setPosition(destRect.x, destRect.y);
     newGlyph->bottomLeft.setUV(uvRect.x, uvRect.y);
 
+    newGlyph->bottomRight.color = color;
+    newGlyph->bottomRight.setPosition(destRect.x + destRect.z, destRect.y);
+    newGlyph->bottomRight.setUV(uvRect.x + uvRect.z, uvRect.y);
+
     newGlyph->topRight.color = color;
     newGlyph->topRight.setPosition(destRect.x + destRect.z, destRect.y + destRect.w);
     newGlyph->topRight.setUV(uvRect.x + uvRect.z, uvRect.y + uvRect.w);
-
-    newGlyph->bottomRight.color = color;
-    newGlyph->bottomRight.setPosition(destRect.x + destRect.z, destRect.y);
-    newGlyph->bottomRight.setUV(uvRect.x, uvRect.y);
 
     _glyphs.push_back(newGlyph);
 }
@@ -56,6 +57,7 @@ void SpriteBatch::renderBatch() {
 
     for (int i = 0; i < _renderBatch.size(); i++) {
         glBindTexture(GL_TEXTURE_2D, _renderBatch[i].texture);
+
         glDrawArrays(GL_TRIANGLES, _renderBatch[i].offset, _renderBatch[i].numVertices);
     }
 
@@ -88,7 +90,7 @@ void SpriteBatch::createRenderBatches() {
         } else {
             _renderBatch.back().numVertices += 6;
         }
-        _renderBatch.emplace_back(0,6, _glyphs[cg]->texture);
+        // _renderBatch.emplace_back(0,6, _glyphs[cg]->texture);
         vertices[cv++] = _glyphs[cg]->topLeft;
         vertices[cv++] = _glyphs[cg]->bottomLeft;
         vertices[cv++] = _glyphs[cg]->bottomRight;

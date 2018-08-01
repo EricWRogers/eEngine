@@ -16,9 +16,7 @@
 
 #include "lua5.3/lua.hpp"
 
-void initSystem();
 void initShaders();
-//void gameLoop();
 void processInput();
 void drawGame();
 void calculateFPS();
@@ -54,20 +52,6 @@ float frameTime;
 float gameTime = 0.0f;
 
 char stringBuilderBuffer[512];
-
-void initSystem()
-{
-    SDL_Init( SDL_INIT_EVERYTHING );
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-    window.create("Game Engine", screenWidth, screenHeight, 0);
-
-    gameState = GameState::PLAY;
-
-    initShaders();
-
-    _spriteBatch.init();
-}
 
 void initShaders() {
     colorProgram.compileShaders("src/Shaders/cShader.vert","src/Shaders/cShader.frag");
@@ -148,9 +132,9 @@ void drawGame()
 
     _spriteBatch.begin();
 
-    glm::vec4 pos(0.0f, 0.0f, 100.0f, 100.0f);
+    glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
     glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
-    GLTexture texture = ResourceManager::getTexture("src/Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
+    static GLTexture texture = ResourceManager::getTexture("src/Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
     Color color;
     color.r = 255;
     color.g = 255;
@@ -158,9 +142,10 @@ void drawGame()
     color.a = 255;
     
     _spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
-
+    _spriteBatch.draw(pos + glm::vec4(50.0f, 0.0f, 0.0f, 0.0f), uv, texture.id, 0.0f, color);
+   
     _spriteBatch.end();
-
+  
     _spriteBatch.renderBatch();
     
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -291,6 +276,9 @@ int CreateWindow(lua_State* state) {
     gameState = GameState::PLAY;
 
     initShaders();
+
+    _spriteBatch.init();
+    
     return 0;
 }
 
@@ -325,6 +313,8 @@ void Draw();
 void endUpdate() { SDL_memcpy(&prevKeys, &keys, NUM_SDL_SCANCODES); }
 
 int main(int argc, char** argv) {
+
+    //initSystem();
     luaState = luaL_newstate();
     luaL_openlibs(luaState);
     
@@ -353,12 +343,12 @@ int main(int argc, char** argv) {
     SDL_memcpy(&prevKeys, &keys, NUM_SDL_SCANCODES);
 }
 
-        /* static int frameCounter = 0;
+        static int frameCounter = 0;
         frameCounter++;
         if (frameCounter == 10) { 
             std::cout << fps << std::endl;
             frameCounter = 0;
-        } */
+        }
 
         float frameTicks = SDL_GetTicks() - startTicks;
         if (1000.0f / maxFPS > frameTicks) {

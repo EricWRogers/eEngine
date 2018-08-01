@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Vertex.h"
+#include "Debug.h"
 
 enum class GlyphSortType {
     NONE,

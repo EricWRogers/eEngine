@@ -4,6 +4,8 @@ sudo apt-get install libsdl2* libglew-dev
 chmod 755 build.sh
 
 ubuntu 16.04
+	g++ src/*.cpp -std=gnu++11 -lSDL2 -lGL -lGLEW -pthread -llua5.3 -o bin/preAlPHA
+
 	libglm-dev
 	glew-utils
 	libglew-dbg
@@ -11,9 +13,16 @@ ubuntu 16.04
 	liblua5.3-0
 	liblua5.3-dbg
 	liblua5.3-dev
-
+	// Maybe
+	mesa-opencl-icd
+	mesa-utils
+	mesa-utils-extra
+	mesa-vulkan-drivers
+	
 setup on Solus
 to get c++ fully working
+	g++ src/*.cpp -std=gnu++11 -lSDL2 -lGL -lGLEW -pthread -llua -o bin/preAlPHA
+
 	sudo eopkg it -c system.devel
 	#include "lua.hpp"
 glew-devel

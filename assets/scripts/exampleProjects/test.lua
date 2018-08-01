@@ -15,7 +15,7 @@ SCREEN_HEIGHT = 600
 -- called once, at the start of the game
 function Start()
     CreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Minimal eEngine Project")
-    twoSprite()
+    --twoSprite()
     Log("DoneStarted")
 end
 
